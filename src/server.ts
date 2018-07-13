@@ -48,6 +48,6 @@ app.use((err: Error, req: express.Request, res: express.Response, next: express.
     res.jsonp(err);
 });
 
-app.listen(3000, "0.0.0.0", () => {
+app.listen(Number(process.env.PORT) || 3000, "0.0.0.0", () => {
     console.log("listening on 3000");
 });
