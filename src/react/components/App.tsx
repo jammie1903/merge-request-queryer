@@ -1,6 +1,7 @@
 import * as React from "react";
 import { ReportData } from "../../interfaces/reportData";
 import ScoreBoard from "./ScoreBoard";
+import Header from "./Header";
 
 export default class App extends React.Component<ReportData> {
 
@@ -16,8 +17,11 @@ export default class App extends React.Component<ReportData> {
 
         return (
             <div className="App">
-                <ScoreBoard title="Approvals" scores={this.props.approvals}></ScoreBoard>
-                <ScoreBoard title="Comments" scores={this.props.comments}></ScoreBoard>
+                <Header />
+                <div className="content">
+                    <ScoreBoard title="Approvals" scores={this.props.approvals}></ScoreBoard>
+                    <ScoreBoard title="Comments" scores={this.props.comments}></ScoreBoard>
+                </div>
             </div>
         );
     }

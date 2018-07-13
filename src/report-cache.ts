@@ -1,13 +1,13 @@
 import { readFileSync, writeFileSync } from "fs";
 import { join } from "path";
 import { ReportData } from "./interfaces/reportData";
-const fileLocation = join("..", "report.json");
+const fileLocation = "report.json";
 
 export class ReportCache {
     private _report: ReportData | null;
     constructor() {
         try {
-            this._report = JSON.parse(readFileSync(join("..", "report.json")).toString()) as ReportData;
+            this._report = JSON.parse(readFileSync(fileLocation).toString()) as ReportData;
         } catch(e) {
             this._report = null;
         }
