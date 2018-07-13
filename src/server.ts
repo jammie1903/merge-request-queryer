@@ -2,6 +2,7 @@ import * as express from "express";
 import * as path from "path";
 import * as bodyParser from "body-parser";
 import * as logger from "morgan";
+import * as HttpErrors from "http-errors";
 import { getScoreboardPage, getUnauthorisedPage } from "./react";
 import reportCache from "./report-cache";
 const app = express();
@@ -38,7 +39,15 @@ app.get("/*", (req, res) => {
     res.end(getUnauthorisedPage());
 });
 
+app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
+    if (!(err instanceof HttpErrors.HttpError)) {
+        console.error(err);
+        err = new HttpErrors.InternalServerError();
+    }
+    res.statusCode = (err as HttpErrors.HttpError).statusCode;
+    res.jsonp(err);
+});
+
 app.listen(3000, "0.0.0.0", () => {
     console.log("listening on 3000");
 });
-
