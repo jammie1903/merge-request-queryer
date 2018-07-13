@@ -1,7 +1,12 @@
 import fetch from "node-fetch";
-import * as config from "../config.json";
+// import * as config from "../config.json";
 import { batchFetch } from "./utils";
 import { ReportData } from "./interfaces/reportData";
+
+const config = {
+    domain: process.env.DOMAIN || "",
+    privateToken: process.env.PRIVATE_TOKEN || ""
+}
 
 export default class ReportGenerator {
 
