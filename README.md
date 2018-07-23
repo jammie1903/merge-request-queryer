@@ -4,9 +4,14 @@
 
 #### Setup
 
-- run `npm install`
-- copy `config.template.json` to `config.json` and fill in the various values
+- Run `npm install`
 
 #### To Run
 
-- run `npm start`
+- Set the following environemnt variables
+
+  - PRIVATE_TOKEN: a token for your account in gitlab, can be created in /profile/personal_access_tokens
+  - DOMAIN: the url for your gitlab server
+  - PASSWORD: the password to access the report dashboard
+
+- Run `npm start`

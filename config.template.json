@@ -1,5 +1,0 @@
-{
-    "instructions": "copy this file to config.json, setting the values as appropriate",
-    "privateToken": "a token for your account in gitlab, can be created in /profile/personal_access_tokens",
-    "domain": "the url for your gitlab server"
-}
