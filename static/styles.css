@@ -5,6 +5,10 @@ body {
     margin: 0;
 }
 
+h1 {
+    color: white;
+}
+
 .App {
     overflow: hidden;
 }
@@ -131,7 +135,7 @@ td {
         margin-bottom: 12px;
         font-size: 1.5em;
     }
-} 
+}
 
 @media only screen and (max-height: 750px) {
     th, td {
@@ -158,4 +162,8 @@ td {
         margin-bottom: 10px;
         font-size: 1.2em;
     }
+}
+
+.stats {
+    text-align: center;
 }
