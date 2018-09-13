@@ -1,7 +1,10 @@
 import fetch from "node-fetch";
+import * as dotenv from "dotenv";
 import { batchFetch } from "./utils";
 import { ReportData } from "./interfaces/reportData";
 import { MRTimings } from "./interfaces/mrTimings";
+
+dotenv.config();
 
 const config = {
     domain: process.env.DOMAIN || "",

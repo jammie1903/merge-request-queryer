@@ -1,4 +1,5 @@
 import * as express from "express";
+import * as dotenv from "dotenv";
 import * as path from "path";
 import * as bodyParser from "body-parser";
 import * as logger from "morgan";
@@ -7,6 +8,8 @@ import { getScoreboardPage, getUnauthorisedPage } from "./react";
 import reportCache from "./report-cache";
 import ReportGenerator from "./report-generator";
 const app = express();
+
+dotenv.config();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
