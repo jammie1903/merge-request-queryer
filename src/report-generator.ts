@@ -1,7 +1,10 @@
 import fetch from "node-fetch";
-// import * as config from "../config.json";
+import * as dotenv from "dotenv";
 import { batchFetch } from "./utils";
 import { ReportData } from "./interfaces/reportData";
+import { MRTimings } from "./interfaces/mrTimings";
+
+dotenv.config();
 
 const config = {
     domain: process.env.DOMAIN || "",
@@ -69,16 +72,7 @@ export default class ReportGenerator {
             .sort((o1, o2) => o2.count - o1.count)
     }
 
-    public async run(): Promise<ReportData> {
-
-        console.log("Fetching Merge Requests");
-        const mrs = await this.getMergeRequests()
-        console.log("Fetching comments\n");
-        const comments: Array<string[]> = await batchFetch(8, mrs, mr => this.getCommentsPerUser(mr));
-        console.log("Fetching approvals\n");
-        const approvals: Array<string[]> = await batchFetch(8, mrs, mr => this.getThumbsUpUsers(mr));
-
-        const approvalsCounter: { [key: string]: number } = {};
+    private getCommentCount(comments: Array<string[]>): any {
         const commentsCounter: { [key: string]: number } = {};
 
         comments.forEach(commentedBy => {
@@ -88,17 +82,53 @@ export default class ReportGenerator {
             });
         });
 
+        return commentsCounter;
+    }
 
+    private getApprovalsCount(approvals: Array<string[]>): any {
+        const approvalsCounter: { [key: string]: number } = {};
         approvals.forEach(approvedBy => {
             approvedBy.forEach(approver => {
                 const approvalCount = approvalsCounter[approver] || 0;
                 approvalsCounter[approver] = approvalCount + 1;
             });
         });
+
+        return approvalsCounter
+    }
+
+    public async run(): Promise<ReportData> {
+
+        console.log("Fetching Merge Requests");
+        const mrs = await this.getMergeRequests();
+        console.log("Fetching comments\n");
+        const comments: Array<string[]> = await batchFetch(8, mrs, mr => this.getCommentsPerUser(mr));
+        console.log("Fetching approvals\n");
+        const approvals: Array<string[]> = await batchFetch(8, mrs, mr => this.getThumbsUpUsers(mr));
+
+        const commentsCounter = this.getCommentCount(comments);
+        const approvalsCounter = this.getApprovalsCount(approvals);
+
+        const timings: MRTimings[] = [];
+
+        mrs.forEach(record => {
+            timings.push({ start: record.created_at, end: record.updated_at });
+        });
+
+        const orderedComments = this.counterToOrderedArray(commentsCounter);
+        const orderedApprovals = this.counterToOrderedArray(approvalsCounter);
+
+        let totalApprovals: number = 0;
+        for(let i = 0; i < orderedApprovals.length; i++) {
+            totalApprovals = totalApprovals + orderedApprovals[i].count;
+        }
+
         return {
-            comments: this.counterToOrderedArray(commentsCounter),
-            approvals: this.counterToOrderedArray(approvalsCounter),
+            comments: orderedComments,
+            approvals: orderedApprovals,
             creationTime: new Date().getTime(),
+            totalApprovals: totalApprovals,
+            timings: timings
         }
     }
 }

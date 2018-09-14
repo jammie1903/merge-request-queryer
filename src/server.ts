@@ -1,11 +1,15 @@
 import * as express from "express";
+import * as dotenv from "dotenv";
 import * as path from "path";
 import * as bodyParser from "body-parser";
 import * as logger from "morgan";
 import * as HttpErrors from "http-errors";
 import { getScoreboardPage, getUnauthorisedPage } from "./react";
 import reportCache from "./report-cache";
+import ReportGenerator from "./report-generator";
 const app = express();
+
+dotenv.config();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -29,7 +33,7 @@ app.get("/test/:secret", (req, res) => {
 
 app.post("/authenticate", (req, res) => {
     if(req.body.password === PASSWORD) {
-        res.redirect("/" + RUNTIME_SECRET);   
+        res.redirect("/" + RUNTIME_SECRET);
     }
 });
 
@@ -48,6 +52,11 @@ app.use((err: Error, req: express.Request, res: express.Response, next: express.
     res.jsonp(err);
 });
 
-app.listen(Number(process.env.PORT) || 3000, "0.0.0.0", () => {
+app.listen(Number(process.env.PORT) || 3000, "0.0.0.0", async () => {
+    // Generate a new report if it is null
+    if (reportCache.get() === null) {
+        const rg = new ReportGenerator();
+        await rg.run();
+    }
     console.log("listening on 3000");
 });

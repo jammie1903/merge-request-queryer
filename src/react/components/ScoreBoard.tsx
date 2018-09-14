@@ -26,17 +26,6 @@ export default class App extends React.Component<ScoreBoardProps> {
                     </thead>
                     <tbody>
                         {this.props.scores.map((score, index) => {
-                            if (this.props.scores.length > 20 && index >= 16 && index < this.props.scores.length - 3) {
-                                if (index !== 16) {
-                                    return "";
-                                }
-                                return (
-                                    <tr key={score.name}>
-                                        <td className="table-gap" colSpan={3}>--------------------</td>
-                                    </tr>
-                                );
-                            }
-
                             return (
                                 <tr key={score.name}>
                                     <td>{index + 1}.</td>
